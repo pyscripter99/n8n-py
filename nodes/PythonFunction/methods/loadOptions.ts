@@ -8,11 +8,11 @@ export async function getFunctions(this: ILoadOptionsFunctions): Promise<INodePr
 
 	const retStdout = execSync('python3 ' + mappingPath).toString('utf-8');
 
-	const data: { friendlyName: string; name: string }[] = JSON.parse(retStdout);
+	const data: { friendly_name: string; name: string }[] = JSON.parse(retStdout);
 
 	data.map((value) => {
 		retData.push({
-			name: value.friendlyName,
+			name: value.friendly_name,
 			value: value.name,
 		});
 	});

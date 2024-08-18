@@ -1,12 +1,12 @@
 import {
-	IDataObject,
 	INodeExecutionData,
 	IExecuteFunctions,
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
 
-import { loadOptions } from './methods';
+import { loadOptions, resourceMapping } from './methods';
+import { execSync } from 'child_process';
 
 export class PythonFunction implements INodeType {
 	description: INodeTypeDescription = {
@@ -42,16 +42,31 @@ export class PythonFunction implements INodeType {
 			{
 				displayName: 'Arguments',
 				name: 'arguments',
-				type: 'json',
+				type: 'resourceMapper',
+				default: {
+					mappingMode: 'defineBelow',
+					value: null,
+				},
 				required: true,
-				default: '',
-				description: 'Arguments for the function',
+				typeOptions: {
+					resourceMapper: {
+						resourceMapperMethod: 'getMappingArguments',
+						mode: 'add',
+						fieldWords: {
+							singular: 'argument',
+							plural: 'arguments',
+						},
+						addAllFields: true,
+						supportAutoMap: true,
+					},
+				},
 			},
 		],
 	};
 
 	methods = {
 		loadOptions,
+		resourceMapping,
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
@@ -60,13 +75,26 @@ export class PythonFunction implements INodeType {
 		const functionName = this.getNodeParameter('function', 0) as string;
 
 		for (let i = 0; i < items.length; i++) {
-			if (functionName === 'parseEmail') {
-				const data: IDataObject = {
-					functionName,
-					body: this.getNodeParameter('html', i),
-				};
-				returnData.push(data);
-			}
+			const mappingPath = (await this.getCredentials('pythonMapping')).configPath;
+
+			const retStdout = execSync(
+				'python3 ' +
+					mappingPath +
+					' ' +
+					Buffer.from(
+						JSON.stringify({
+							command: 'EXECUTE',
+							data: {
+								function_name: functionName,
+								data: JSON.parse(JSON.stringify(this.getNodeParameter('arguments', i)))['value'],
+							},
+						}),
+					).toString('base64'),
+			).toString('utf-8');
+
+			const data = JSON.parse(retStdout);
+
+			returnData.push(data);
 		}
 		return [this.helpers.returnJsonArray(returnData)];
 	}
