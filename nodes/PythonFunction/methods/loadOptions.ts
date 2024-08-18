@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 export async function getFunctions(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 	const retData: INodePropertyOptions[] = [];
 
-	const mappingPath = (await this.getCredentials('pythonMapping')).configPath;
+	const mappingPath = (await this.getCredentials('pythonMappingApi')).configPath;
 
 	const retStdout = execSync('python3 ' + mappingPath).toString('utf-8');
 

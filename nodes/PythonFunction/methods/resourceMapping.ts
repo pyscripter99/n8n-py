@@ -108,7 +108,7 @@ function handleEnum(data: OptionsField): ResourceMapperField {
 export async function getMappingArguments(
 	this: ILoadOptionsFunctions,
 ): Promise<ResourceMapperFields> {
-	const mappingPath = (await this.getCredentials('pythonMapping')).configPath;
+	const mappingPath = (await this.getCredentials('pythonMappingApi')).configPath;
 
 	const retStdout = execSync(
 		'python3 ' +
@@ -129,7 +129,6 @@ export async function getMappingArguments(
 	let fields: ResourceMapperField[] = [];
 
 	data.forEach((arg) => {
-		console.log(arg.type);
 		switch (arg.type) {
 			case 'number':
 				fields.push(handleNumber(arg as unknown as NumberField));

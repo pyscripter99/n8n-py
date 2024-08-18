@@ -1,8 +1,8 @@
 import { ICredentialType, INodeProperties } from 'n8n-workflow';
 
-export class PythonMapping implements ICredentialType {
-	name = 'pythonMapping';
-	displayName = 'Python Mapping';
+export class PythonMappingApi implements ICredentialType {
+	name = 'pythonMappingApi';
+	displayName = 'Python Mapping API';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Configuration Path',

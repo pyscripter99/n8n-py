@@ -23,7 +23,7 @@ export class PythonFunction implements INodeType {
 		outputs: ['main'],
 		credentials: [
 			{
-				name: 'pythonMapping',
+				name: 'pythonMappingApi',
 				required: true,
 			},
 		],
@@ -75,7 +75,7 @@ export class PythonFunction implements INodeType {
 		const functionName = this.getNodeParameter('function', 0) as string;
 
 		for (let i = 0; i < items.length; i++) {
-			const mappingPath = (await this.getCredentials('pythonMapping')).configPath;
+			const mappingPath = (await this.getCredentials('pythonMappingApi')).configPath;
 
 			const retStdout = execSync(
 				'python3 ' +
