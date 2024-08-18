@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-python-function",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Call python functions from n8n",
   "keywords": [
     "n8n-community-node-package"
@@ -36,7 +36,7 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/PythonMapping.credentials.js"
+      "dist/credentials/PythonMappingApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/PythonFunction/PythonFunction.node.js"
