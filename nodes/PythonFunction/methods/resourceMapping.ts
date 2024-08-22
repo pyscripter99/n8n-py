@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import {
 	ILoadOptionsFunctions,
 	INodePropertyOptions,
@@ -18,9 +17,6 @@ type NumberField = {
 	name: string;
 	friendly_name: string;
 	description: string;
-	minimum: number | null;
-	maximum: number | null;
-	precision: number;
 	default: number;
 	required: boolean;
 };
@@ -30,7 +26,6 @@ type StringField = {
 	friendly_name: string;
 	description: string;
 	default: string;
-	placeholder: string;
 	required: boolean;
 };
 
@@ -108,23 +103,16 @@ function handleEnum(data: OptionsField): ResourceMapperField {
 export async function getMappingArguments(
 	this: ILoadOptionsFunctions,
 ): Promise<ResourceMapperFields> {
-	const mappingPath = (await this.getCredentials('pythonMappingApi')).configPath;
+	const mappingServer = (await this.getCredentials('pythonMappingApi'))
+		.mappingServer as unknown as string;
 
-	const retStdout = execSync(
-		'python3 ' +
-			mappingPath +
-			' ' +
-			Buffer.from(
-				JSON.stringify({
-					command: 'GET_ARGUMENTS',
-					data: {
-						function_name: this.getNodeParameter('function'),
-					},
-				}),
-			).toString('base64'),
-	).toString('utf-8');
+	const response = await this.helpers.httpRequest({
+		url:
+			URL.parse('get_arguments?function=' + this.getNodeParameter('function', ''), mappingServer)
+				?.href ?? '',
+	});
 
-	const data: Field[] = JSON.parse(retStdout);
+	const data: Field[] = response;
 
 	let fields: ResourceMapperField[] = [];
 

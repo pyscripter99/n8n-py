@@ -5,10 +5,10 @@ export class PythonMappingApi implements ICredentialType {
 	displayName = 'Python Mapping API';
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Configuration Path',
-			name: 'configPath',
+			displayName: 'Mapping Server',
+			name: 'mappingServer',
 			type: 'string',
-			default: '',
+			default: 'http://mapping:5566/',
 		},
 	];
 }

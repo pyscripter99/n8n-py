@@ -6,7 +6,6 @@ import {
 } from 'n8n-workflow';
 
 import { loadOptions, resourceMapping } from './methods';
-import { execSync } from 'child_process';
 
 export class PythonFunction implements INodeType {
 	description: INodeTypeDescription = {
@@ -75,26 +74,22 @@ export class PythonFunction implements INodeType {
 		const functionName = this.getNodeParameter('function', 0) as string;
 
 		for (let i = 0; i < items.length; i++) {
-			const mappingPath = (await this.getCredentials('pythonMappingApi')).configPath;
+			const mappingServer = (await this.getCredentials('pythonMappingApi'))
+				.mappingServer as unknown as string;
 
-			const retStdout = execSync(
-				'python3 ' +
-					mappingPath +
-					' ' +
-					Buffer.from(
-						JSON.stringify({
-							command: 'EXECUTE',
-							data: {
-								function_name: functionName,
-								data: JSON.parse(JSON.stringify(this.getNodeParameter('arguments', i)))['value'],
-							},
-						}),
-					).toString('base64'),
-			).toString('utf-8');
+			const response = await this.helpers.httpRequest({
+				url:
+					URL.parse(
+						'execute?function=' +
+							functionName +
+							'&arguments=' +
+							Buffer.from(JSON.stringify(this.getNodeParameter('arguments', 0))).toString('base64'),
+						mappingServer,
+					)?.href ?? '',
+				method: 'POST',
+			});
 
-			const data = JSON.parse(retStdout);
-
-			returnData.push(data);
+			returnData.push(response);
 		}
 		return [this.helpers.returnJsonArray(returnData)];
 	}
