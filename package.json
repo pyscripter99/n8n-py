@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-python-function",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Call python functions from n8n",
   "keywords": [
     "n8n-community-node-package"
