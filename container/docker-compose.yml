@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  n8n_py_mapping:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    stop_signal: SIGKILL
+    ports:
+      - 5566:5566
+    volumes:
+      - ./example/:/mapping/
