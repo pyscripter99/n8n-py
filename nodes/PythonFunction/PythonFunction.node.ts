@@ -80,16 +80,8 @@ export class PythonFunction implements INodeType {
 				.mappingServer as unknown as string;
 
 			const response = await this.helpers.httpRequest({
-				url:
-					new URL(
-						'execute?function=' +
-							functionName +
-							'&arguments=' +
-							Buffer.from(
-								JSON.stringify((this.getNodeParameter('arguments', 0) as unknown as any).value),
-							).toString('base64'),
-						mappingServer,
-					)?.href ?? '',
+				url: new URL('execute?function=' + functionName, mappingServer)?.href ?? '',
+				body: (this.getNodeParameter('arguments', 0) as unknown as any).value,
 				method: 'POST',
 			});
 
