@@ -7,6 +7,8 @@ import {
 
 import { loadOptions, resourceMapping } from './methods';
 
+import { URL } from 'url';
+
 export class PythonFunction implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Python Function',
@@ -79,11 +81,13 @@ export class PythonFunction implements INodeType {
 
 			const response = await this.helpers.httpRequest({
 				url:
-					URL.parse(
+					new URL(
 						'execute?function=' +
 							functionName +
 							'&arguments=' +
-							Buffer.from(JSON.stringify(this.getNodeParameter('arguments', 0))).toString('base64'),
+							Buffer.from(
+								JSON.stringify((this.getNodeParameter('arguments', 0) as unknown as any).value),
+							).toString('base64'),
 						mappingServer,
 					)?.href ?? '',
 				method: 'POST',

@@ -1,5 +1,7 @@
 import { ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
+import { URL } from 'url';
+
 export async function getFunctions(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
 	const retData: INodePropertyOptions[] = [];
 
@@ -7,7 +9,7 @@ export async function getFunctions(this: ILoadOptionsFunctions): Promise<INodePr
 		.mappingServer as unknown as string;
 
 	const response = await this.helpers.httpRequest({
-		url: URL.parse('list', mappingServer)?.href ?? '',
+		url: new URL('list', mappingServer)?.href ?? '',
 	});
 
 	const data: { friendly_name: string; name: string }[] = response;

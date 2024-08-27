@@ -14,7 +14,7 @@ RUN mkdir -p /mapping
 
 RUN --mount=type=cache,target=/root/.cache/pip \
 	python3 -m venv /mapping-py/.venv/ && \
-	bash -c "cd /mapping-py/ && source .venv/bin/activate && pip install n8n-py==0.0.2"
+	bash -c "cd /mapping-py/ && source .venv/bin/activate && pip install --upgrade n8n-py==0.0.5"
 
 RUN chmod -R 777 /mapping-py/.venv/lib/python*/site-packages/
 

@@ -5,6 +5,8 @@ import {
 	ResourceMapperFields,
 } from 'n8n-workflow';
 
+import { URL } from 'url';
+
 type Field = {
 	name: string;
 	friendly_name: string;
@@ -106,11 +108,18 @@ export async function getMappingArguments(
 	const mappingServer = (await this.getCredentials('pythonMappingApi'))
 		.mappingServer as unknown as string;
 
+	console.log(
+		new URL('/get_arguments?function=' + this.getNodeParameter('function', ''), mappingServer)
+			?.href ?? '',
+	);
+
 	const response = await this.helpers.httpRequest({
 		url:
-			URL.parse('get_arguments?function=' + this.getNodeParameter('function', ''), mappingServer)
+			new URL('/get_arguments?function=' + this.getNodeParameter('function', ''), mappingServer)
 				?.href ?? '',
 	});
+
+	console.log(response);
 
 	const data: Field[] = response;
 
